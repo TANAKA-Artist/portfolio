@@ -102,7 +102,7 @@ document.addEventListener("DOMContentLoaded", () => {
      ---------------------------------------------------------------------- */
   const svg = document.getElementById("hero-svg-bg");
   if (svg) {
-    const SVG_NS = "http://www.w3.org/2000/svg";
+    const SVG_NS = "https://www.w3.org/2000/svg";
     const NUM_PARTICLES = 25;
     const MAX_DIST = 150;
     const MOUSE_ATTRACT_DIST = 220;
