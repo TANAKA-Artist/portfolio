@@ -1,23 +1,20 @@
-/* ==========================================================================
-   0. ROOT VARIABLES & EDITORIAL RESET
-   ========================================================================== */
 :root {
+  /* Colors */
   --bg-main: #0c0c0c;
   --bg-sub: #141414;
   --bg-light: #f5f0e8;
-  --bg-footer: #0a0a0a;
   
-  --text-dark-bg: #ede8df;
-  --text-light-bg: #1a1a1a;
+  --text-dark: #ede8df;
+  --text-light: #1a1a1a;
   --text-aux: #6b6560;
   
-  --accent: #e07a30;
-  --accent-aux: #c9973a;
+  --accent1: #8282ff;
+  --accent2: #A3A3A3;
+  --accent-aux: #;
   
-  --font-en: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-ja: 'Noto Sans JP', sans-serif;
-  
-  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  /* Fonts */
+  --font-en: 'Inter', sans-serif;
+  --font-jp: 'Noto Sans JP', sans-serif;
 }
 
 * {
@@ -28,21 +25,20 @@
 
 html {
   scroll-behavior: smooth;
-  background-color: var(--bg-main);
-  color: var(--text-dark-bg);
-  font-family: var(--font-en);
 }
 
 body {
+  background-color: var(--bg-main);
+  color: var(--text-dark);
+  font-family: var(--font-en);
+  line-height: 1.6;
   overflow-x: hidden;
-  line-height: 1.7;
-  font-weight: 300;
 }
 
-/* Japanese Typography Formatting */
-.ja {
-  font-family: var(--font-ja);
-  font-feature-settings: "palt" 1;
+/* 日本語テキスト専用クラス */
+.jp {
+  font-family: var(--font-jp);
+  font-feature-settings: "palt";
   letter-spacing: 0.06em;
 }
 
@@ -51,13 +47,26 @@ a {
   text-decoration: none;
 }
 
+.d-block {
+  display: block;
+}
+
+.accent-text1 {
+  color: var(--accent1);
+}
+
+.accent-text2 {
+  color: var(--accent2);
+}
+
 ul {
   list-style: none;
 }
 
-/* ==========================================================================
-   1. NAVIGATION (Fixed Header)
-   ========================================================================== */
+
+/* -------------------
+   Navigation
+-------------------- */
 .header {
   position: fixed;
   top: 0;
@@ -70,7 +79,7 @@ ul {
   padding: 0 5vw;
   z-index: 100;
   background: transparent;
-  transition: background 0.4s var(--ease-out-expo), height 0.4s var(--ease-out-expo), backdrop-filter 0.4s ease;
+  transition: background 0.4s, height 0.4s, backdrop-filter 0.4s ease;
 }
 
 .header.scrolled {
@@ -113,7 +122,9 @@ ul {
   width: 0%;
   height: 1px;
   background: var(--accent);
-  transition: width 0.3s var(--ease-out-expo);
+  transform: scale(0,1);
+  transform-origin: left top;
+  transition: transform 0.3s;
 }
 
 .nav-links a:hover {
@@ -122,6 +133,7 @@ ul {
 }
 
 .nav-links a:hover::after {
+  transform: scale(1, 1);
   width: 100%;
 }
 
@@ -138,518 +150,397 @@ ul {
   width: 26px;
   height: 1.5px;
   background-color: var(--text-dark-bg);
-  transition: transform 0.4s var(--ease-out-expo), opacity 0.3s ease;
+  transition: transform 0.4s, opacity 0.3s ease;
 }
 
-/* ==========================================================================
-   2. HERO SECTION (100vh, Left-aligned, Asymmetry)
-   ========================================================================== */
-.hero {
+/* -------------------
+   Hero Section
+-------------------- */
+#hero {
   position: relative;
-  width: 100vw;
   height: 100vh;
-  min-height: 640px;
+  min-height: 700px;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  align-items: center;
   padding: 0 8vw;
   overflow: hidden;
-  background-color: var(--bg-main);
+
 }
 
-#hero-svg-bg {
+#particle-svg {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   z-index: 1;
-  pointer-events: none;
+  pointer-events: none; /* Mouse move is handled on window */
 }
 
 .hero-content {
   position: relative;
-  z-index: 2;
-  max-width: 1200px;
+  z-index: 10;
+  width: 1600px;
+  
 }
 
-.stagger-item {
-  opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.9s var(--ease-out-expo), transform 0.9s var(--ease-out-expo);
-}
-
-.stagger-item.loaded {
-  opacity: 1;
-  transform: translateY(0);
+.hero-content::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  top: 0;
+  left: 0;
+  opacity: 0.25;
+  height: 100%;
+  width: 105%;
+  background-image: url(img/HeroSection_background.png);
+  background-repeat: no-repeat;
+  background-position: right;
 }
 
 .hero-label {
-  font-size: 0.85rem;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
+  font-size: 1rem;
+  letter-spacing: 0.1em;
   color: var(--text-aux);
   margin-bottom: 2rem;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.hero-label::before {
-  content: '';
-  width: 40px;
-  height: 1px;
-  background: var(--accent);
-}
-
-.hero-name {
-  font-size: clamp(4rem, 12vw, 10rem);
-  font-weight: 800;
-  line-height: 0.92;
-  letter-spacing: -0.03em;
-  margin-bottom: 2.5rem;
-  text-transform: uppercase;
-}
-
-.hero-name .line1 {
-  color: var(--accent);
-  display: block;
-}
-
-.hero-name .line2 {
-  color: var(--text-dark-bg);
-  display: block;
-  margin-left: -0.02em;
-}
-
-.hero-tagline {
-  font-size: clamp(1.1rem, 2.2vw, 1.6rem);
   font-weight: 300;
-  color: var(--text-dark-bg);
-  margin-bottom: 3.5rem;
-  max-width: 600px;
 }
 
-.ghost-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.8rem;
-  padding: 1.1rem 2.8rem;
-  font-size: 0.85rem;
-  font-weight: 600;
-  letter-spacing: 0.15em;
+.hero-title1 {
+  font-size: clamp(6rem, 8vw, 8rem);
+  font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: 3rem;
   text-transform: uppercase;
-  color: var(--text-dark-bg);
-  border: 1px solid rgba(237, 232, 223, 0.25);
-  background: transparent;
-  transition: all 0.4s var(--ease-out-expo);
-  cursor: pointer;
+  /* エディトリアルな詰めた配置 */
+  margin-left: -0.5vw; 
 }
 
-.ghost-btn:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-  background: rgba(224, 122, 48, 0.05);
-  transform: translateX(6px);
+.hero-title2 {
+  font-size: clamp(4rem, 7vw, 7rem);
+  font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: 3rem;
+  text-transform: uppercase;
+  /* エディトリアルな詰めた配置 */
+  margin-left: -0.5vw; 
 }
 
-/* ==========================================================================
-   3. WORKS SECTION — FILMSTRIP CINEMATIC HORIZONTAL SCROLL
-   ========================================================================== */
-.works-section {
-  position: relative;
-  background: var(--bg-main);
-  padding: 9vw 0 10vw;
-  border-top: 1px solid rgba(237, 232, 223, 0.05);
-}
-
-.section-header-left {
-  padding: 0 8vw;
+.hero-catch {
+  font-size: clamp(1.2rem, 2vw, 1.8rem);
+  font-weight: 300;
   margin-bottom: 4rem;
 }
 
-.section-title {
-  font-size: clamp(2.5rem, 5vw, 4rem);
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  color: var(--text-dark-bg);
+.ghost-btn {
+  display: inline-block;
+  padding: 1rem 3rem;
+  border: 1px solid var(--text-dark);
+  border-radius: 50px;
+  font-weight: 300;
+  letter-spacing: 0.1em;
+  transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-.filmstrip-wrapper {
+.ghost-btn:hover {
+  background-color: var(--text-dark);
+  color: var(--bg-main);
+  padding-right: 2rem;
+  padding-left: 4rem;
+}
+
+/* Stagger Animation Base */
+.stagger-elem {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+/* -------------------
+   Works Section
+-------------------- */
+#works {
+  padding: 15vh 0;
   position: relative;
+}
+
+.works-title {
+  font-size: clamp(3rem, 6vw, 5rem);
+  font-weight: 800;
+  margin-left: 4vw;
+  margin-bottom: 5vh;
+  color: var(--text-dark);
+}
+
+.works-scroll-wrapper {
   width: 100%;
   overflow: hidden;
 }
 
-.filmstrip-scroll {
+.works-scroll {
   display: flex;
-  align-items: center;
+  gap: 6vw;
+  padding: 0 4vw 4vw 4vw;
   overflow-x: auto;
-  overflow-y: hidden;
+  scrollbar-width: none; /* Firefox */
   cursor: grab;
-  padding: 2rem 8vw 4rem;
-  gap: 0;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  user-select: none;
-  -webkit-user-select: none;
 }
 
-.filmstrip-scroll::-webkit-scrollbar {
-  display: none;
+.works-scroll::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
 }
 
-.filmstrip-scroll:active {
+.works-scroll:active {
   cursor: grabbing;
 }
 
-.film-sprocket-col {
-  flex: 0 0 60px;
-  height: 380px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 10px 0;
-  background: #080808;
-  border-left: 1px solid rgba(255,255,255,0.04);
-  border-right: 1px solid rgba(255,255,255,0.04);
-}
-
-.sprocket-hole {
-  width: 16px;
-  height: 24px;
-  background: var(--bg-main);
-  border-radius: 4px;
-  margin: 0 auto;
-  border: 1px solid rgba(255,255,255,0.03);
-}
-
 .work-item {
-  flex: 0 0 72vw;
-  max-width: 860px;
-  min-width: 320px;
+  flex: 0 0 auto;
+  width: clamp(280px, 70vw, 900px);
   display: flex;
   flex-direction: column;
-  margin: 0;
+  gap: 1.5rem;
 }
 
-.work-thumb-box {
+/* フィルムストリップ表現 */
+.film-frame {
   position: relative;
+  background-color: #050505;
+  padding: 30px 0;
+  border-radius: 4px;
+  overflow: hidden;
+  transition: box-shadow 0.4s ease;
+}
+
+.film-frame:hover {
+  box-shadow: 0 0 40px rgba(224, 122, 48, 0.15);
+}
+
+.film-frame img {
   width: 100%;
   aspect-ratio: 2.35 / 1;
-  background: #111;
-  overflow: hidden;
-  border: 1px solid rgba(237, 232, 223, 0.08);
-  transition: border-color 0.4s ease, box-shadow 0.6s var(--ease-out-expo);
-}
-
-.work-item:hover .work-thumb-box {
-  border-color: rgba(224, 122, 48, 0.4);
-  box-shadow: 0 0 50px rgba(224, 122, 48, 0.15);
-}
-
-.work-thumb-box .visual-bg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
   object-fit: cover;
-  transition: transform 0.8s var(--ease-out-expo);
+  display: block;
+  opacity: 0.9;
+  transition: opacity 0.4s ease;
 }
 
-.work-item:hover .visual-bg {
-  transform: scale(1.04);
+.film-frame:hover img {
+  opacity: 1;
 }
 
-.cinema-overlay {
+.perforation {
   position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(0,0,0,0.4) 0%, rgba(224, 122, 48, 0.08) 100%);
-  pointer-events: none;
+  left: 0;
+  width: 100%;
+  height: 20px;
+  /* SVGでフィルムの穴を描画 */
+  background-image: radial-gradient(circle at 15px 10px, transparent 6px, #050505 7px);
+  background-size: 30px 20px;
+  background-repeat: repeat-x;
 }
 
-.work-info {
-  padding: 1.8rem 0 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  flex-wrap: wrap;
-  gap: 1rem;
+.perforation.top {
+  top: 0;
+}
+.perforation.bottom {
+  bottom: 0;
 }
 
-.work-title {
-  font-size: clamp(1.4rem, 2.5vw, 2.2rem);
-  font-weight: 800;
-  letter-spacing: -0.01em;
-  color: var(--text-dark-bg);
-  transition: color 0.3s ease;
+.work-meta h3 {
+  font-size: clamp(1.2rem, 2vw, 1.8rem);
+  font-weight: 700;
+  margin-bottom: 0.5rem;
 }
 
-.work-item:hover .work-title {
-  color: var(--accent);
-}
-
-.work-tag {
-  font-size: 0.75rem;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
+.work-meta p {
   color: var(--text-aux);
-  border: 1px solid rgba(107, 101, 96, 0.3);
-  padding: 0.3rem 0.8rem;
+  font-size: 0.9rem;
+  letter-spacing: 0.05em;
 }
 
-.drag-hint {
-  padding: 0 8vw;
-  font-size: 0.75rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--text-aux);
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-}
-
-.drag-hint-line {
-  width: 50px;
-  height: 1px;
-  background: var(--text-aux);
-  opacity: 0.4;
-}
-
-/* ==========================================================================
-   4. ABOUT SECTION (#f5f0e8 Light BG — High Contrast Editorial Switch)
-   ========================================================================== */
-.about-section {
-  position: relative;
+/* -------------------
+   About Section
+-------------------- */
+.bg-light {
   background-color: var(--bg-light);
-  color: var(--text-light-bg);
-  padding: 12vw 8vw;
-  overflow: hidden;
-  display: grid;
-  grid-template-columns: 1fr 1.6fr;
-  gap: 4vw;
-  align-items: center;
+  color: var(--text-light);
 }
 
-.about-initial-deco {
+#about {
+  position: relative;
+  padding: 20vh 8vw;
+  overflow: hidden;
+}
+
+.about-bg-initial {
   position: absolute;
-  left: 2vw;
   top: 50%;
+  left: -2%;
   transform: translateY(-50%);
-  font-size: 32vw;
+  font-size: 15rem;
+  font-family: var(--font-en);
   font-weight: 800;
-  line-height: 0.8;
-  color: #000;
+  line-height: 1;
+  color: var(--text-light);
   opacity: 0.06;
   pointer-events: none;
-  user-select: none;
-  font-family: var(--font-en);
+  z-index: 0;
 }
 
-.about-left {
+.about-container {
   position: relative;
-  z-index: 2;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
 }
 
-.about-label {
+/* 非対称レイアウトのための空要素 */
+.about-empty {
+  flex: 1 1 300px;
+}
+
+.about-content {
+  flex: 1 1 500px;
+  max-width: 700px;
+}
+
+.section-label {
+  display: block;
   font-size: 0.85rem;
   letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--accent);
-  font-weight: 800;
-  margin-bottom: 2rem;
-  display: block;
+  font-weight: 600;
+  margin-bottom: 3rem;
 }
 
-.about-heading {
-  font-size: clamp(2rem, 4vw, 3.6rem);
+.about-title {
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
   font-weight: 700;
-  line-height: 1.35;
-  color: var(--text-light-bg);
-  margin-bottom: 2rem;
+  line-height: 1.3;
+  margin-bottom: 3rem;
 }
 
-.about-right {
-  position: relative;
-  z-index: 2;
-  padding-left: 2vw;
+.about-desc {
+  font-size: clamp(1rem, 1.5vw, 1.2rem);
+  font-weight: 300;
+  color: #333;
+  margin-bottom: 4rem;
 }
 
-.about-body {
-  font-size: clamp(1rem, 1.4vw, 1.25rem);
-  line-height: 2.1;
-  color: #3a3836;
-  margin-bottom: 3.5rem;
-  max-width: 640px;
+.about-history p {
+  font-size: 0.95rem;
+  font-weight: 300;
+  margin-bottom: 1rem;
+  display: flex;
+  gap: 2rem;
+  border-bottom: 1px solid rgba(0,0,0,0.1);
+  padding-bottom: 1rem;
 }
 
-.career-list {
-  border-top: 1px solid rgba(26, 26, 26, 0.15);
-  padding-top: 2rem;
+.history-year {
+  font-family: var(--font-en);
+  font-weight: 600;
+  min-width: 100px;
+}
+
+/* -------------------
+   Skills Section
+-------------------- */
+.bg-sub {
+  background-color: var(--bg-sub);
+}
+
+#skills {
+  padding: 15vh 8vw;
+}
+
+.skills-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4vw;
+  justify-content: space-between;
+}
+
+.skill-item {
+  flex: 1 1 200px;
   display: flex;
   flex-direction: column;
-  gap: 1.2rem;
-}
-
-.career-item {
-  display: grid;
-  grid-template-columns: 80px 1fr;
-  gap: 1.5rem;
-  align-items: baseline;
-  font-size: 0.95rem;
-}
-
-.career-year {
-  font-family: var(--font-en);
-  font-weight: 800;
-  color: var(--accent);
-}
-
-.career-desc {
-  color: var(--text-light-bg);
-  font-weight: 700;
-}
-
-/* ==========================================================================
-   5. SKILLS SECTION (BG #141414 — Asymmetric / Editorial Grid)
-   ========================================================================== */
-.skills-section {
-  background-color: var(--bg-sub);
-  padding: 12vw 8vw;
-  position: relative;
-}
-
-.skills-header {
-  margin-bottom: 6vw;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  flex-wrap: wrap;
   gap: 2rem;
 }
 
-.skills-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 2.5vw;
+.skill-icon {
+  width: 64px;
+  height: 64px;
+  color: var(--accent);
+  fill: none;
+  stroke-width: 1.2px;
+  transition: filter 0.4s ease, transform 0.4s ease;
 }
 
-.skill-card {
-  padding: 3rem 2rem;
-  background: rgba(255, 255, 255, 0.015);
-  border: 1px solid rgba(237, 232, 223, 0.05);
-  transition: transform 0.5s var(--ease-out-expo), border-color 0.4s ease, background 0.4s ease;
+.skill-item:hover .skill-icon {
+  filter: drop-shadow(0 8px 16px rgba(224, 122, 48, 0.4));
+  transform: translateY(-5px);
+}
+
+.skill-item p {
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.skill-item span {
+  font-family: var(--font-en);
+  font-size: 0.85rem;
+  font-weight: 300;
+  color: var(--text-aux);
+}
+
+/* -------------------
+   Contact Section
+-------------------- */
+#contact {
+  padding: 20vh 8vw;
+  text-align: center;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  min-height: 340px;
-}
-
-.skill-card:hover {
-  transform: translateY(-10px);
-  border-color: rgba(224, 122, 48, 0.3);
-  background: rgba(255, 255, 255, 0.03);
-}
-
-.skill-icon-wrap {
-  width: 56px;
-  height: 56px;
-  display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 2.5rem;
-  transition: filter 0.4s ease;
-}
-
-.skill-card:hover .skill-icon-wrap {
-  filter: drop-shadow(0 0 12px rgba(224, 122, 48, 0.65));
-}
-
-.skill-icon-wrap svg {
-  width: 100%;
-  height: 100%;
-  stroke: var(--accent);
-  stroke-width: 1.2px;
-  fill: none;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.skill-ja-title {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: var(--text-dark-bg);
-  margin-bottom: 0.4rem;
-}
-
-.skill-en-title {
-  font-size: 0.75rem;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--accent-aux);
-  margin-bottom: 2rem;
-  display: block;
-}
-
-.skill-tools {
-  font-size: 0.85rem;
-  color: var(--text-aux);
-  border-top: 1px solid rgba(237, 232, 223, 0.08);
-  padding-top: 1.2rem;
-  line-height: 1.6;
-}
-
-/* ==========================================================================
-   6. CONTACT SECTION (BG #0c0c0c — Dramatic Center Finish)
-   ========================================================================== */
-.contact-section {
-  background-color: var(--bg-main);
-  padding: 14vw 8vw;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
 }
 
 .contact-title {
   font-size: clamp(3rem, 8vw, 7rem);
   font-weight: 800;
-  line-height: 0.95;
-  letter-spacing: -0.03em;
+  line-height: 1.1;
   text-transform: uppercase;
-  margin-bottom: 2.5rem;
-  color: var(--text-dark-bg);
+  margin-bottom: 2rem;
 }
 
 .contact-sub {
-  font-size: clamp(1rem, 1.8vw, 1.3rem);
   color: var(--text-aux);
   margin-bottom: 4rem;
-}
-
-.contact-email-wrap {
-  margin-bottom: 5rem;
+  font-size: 1.1rem;
+  font-weight: 300;
 }
 
 .contact-email {
-  font-size: clamp(1.4rem, 4vw, 3.2rem);
-  font-weight: 600;
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
   color: var(--accent);
+  font-weight: 300;
   position: relative;
   display: inline-block;
-  padding-bottom: 8px;
+  margin-bottom: 5rem;
 }
 
 .contact-email::after {
   content: '';
   position: absolute;
-  bottom: 0;
-  left: 0;
   width: 100%;
-  height: 2px;
-  background: var(--accent);
+  height: 1px;
+  bottom: -5px;
+  left: 0;
+  background-color: var(--accent);
   transform: scaleX(0);
   transform-origin: right;
-  transition: transform 0.5s var(--ease-out-expo);
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .contact-email:hover::after {
@@ -657,98 +548,68 @@ ul {
   transform-origin: left;
 }
 
-.sns-icons {
+.sns-links {
   display: flex;
-  justify-content: center;
-  gap: 3rem;
-  align-items: center;
+  gap: 2rem;
 }
 
-.sns-icons a {
-  width: 44px;
-  height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-aux);
-  border: 1px solid rgba(237, 232, 223, 0.12);
-  border-radius: 50%;
-  transition: all 0.4s var(--ease-out-expo);
-}
-
-.sns-icons a svg {
-  width: 18px;
-  height: 18px;
-  stroke: currentColor;
-  stroke-width: 1.5px;
+.sns-icon {
+  width: 24px;
+  height: 24px;
+  color: var(--text-dark);
   fill: none;
+  stroke-width: 1.2px;
+  transition: color 0.3s ease, transform 0.3s ease;
 }
 
-.sns-icons a:hover {
+.sns-links a:hover .sns-icon {
   color: var(--accent);
-  border-color: var(--accent);
-  transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(224, 122, 48, 0.15);
+  transform: translateY(-3px);
 }
 
-/* ==========================================================================
-   7. FOOTER
-   ========================================================================== */
-.footer {
-  background-color: var(--bg-footer);
-  position: relative;
-  padding: 4rem 8vw;
+/* -------------------
+   Footer
+-------------------- */
+footer {
+  background-color: #0a0a0a;
+  padding: 3rem 0;
   text-align: center;
+  position: relative;
 }
 
-.footer-top-line {
+footer::before {
+  content: '';
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 2px;
-  background: linear-gradient(90deg, transparent 0%, var(--accent) 50%, transparent 100%);
+  background: linear-gradient(90deg, transparent, var(--accent), var(--accent-aux), transparent);
 }
 
-.copyright {
-  font-size: 0.8rem;
-  letter-spacing: 0.15em;
+footer p {
+  font-size: 0.85rem;
   color: var(--text-aux);
-  text-transform: uppercase;
+  letter-spacing: 0.1em;
 }
 
-/* ==========================================================================
-   8. SCROLL FADE-IN ANIMATION CLASSES (IntersectionObserver)
-   ========================================================================== */
-.reveal {
+/* -------------------
+   Animations & Utils
+-------------------- */
+.fade-in {
   opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.9s var(--ease-out-expo), transform 0.9s var(--ease-out-expo);
+  transform: translateY(40px);
+  transition: opacity 1s cubic-bezier(0.2, 0.8, 0.2, 1), transform 1s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-.reveal.is-revealed {
+.fade-in.visible {
   opacity: 1;
   transform: translateY(0);
 }
 
-/* ==========================================================================
-   9. RESPONSIVE BREAKPOINTS (375px — 1440px)
-   ========================================================================== */
-@media (max-width: 1080px) {
-  .skills-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 3vw;
-  }
-  .about-section {
-    grid-template-columns: 1fr;
-    gap: 3rem;
-  }
-  .about-initial-deco {
-    font-size: 40vw;
-    left: -5vw;
-  }
-}
-
+/* -------------------
+   Media Queries
+-------------------- */
 @media (max-width: 768px) {
   .nav-links {
     position: fixed;
@@ -760,7 +621,7 @@ ul {
     flex-direction: column;
     justify-content: center;
     gap: 3rem;
-    transition: right 0.5s var(--ease-out-expo);
+    transition: right 0.5s;
     border-left: 1px solid rgba(237, 232, 223, 0.1);
   }
 
@@ -783,12 +644,14 @@ ul {
     transform: translateY(-7.5px) rotate(-45deg);
   }
 
-  .hero {
-    padding: 0 6vw;
+  .menu-toggle {
+    display: block;
   }
-
-  .work-item {
-    flex: 0 0 85vw;
+  
+  .about-bg-initial {
+    font-size: 10rem;
+    top: 10%;
+    left: 10%;
   }
 
   .film-sprocket-col {
@@ -803,5 +666,11 @@ ul {
 
   .skills-grid {
     grid-template-columns: 1fr;
+  }
+
+  
+  .skills-container {
+    flex-direction: column;
+    gap: 3rem;
   }
 }
