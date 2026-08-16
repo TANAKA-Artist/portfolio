@@ -1,88 +1,101 @@
 document.addEventListener("DOMContentLoaded", () => {
-  /* -------------------------------------------
-     1. Header Scroll Effect
-  ------------------------------------------- */
+  /* ----------------------------------------------------------------------
+     A. HEADER SCROLL & MOBILE MENU TOGGLE
+     ---------------------------------------------------------------------- */
   const header = document.getElementById("header");
+  const hamburger = document.getElementById("hamburger");
+  const navLinks = document.getElementById("nav-links");
+  const navLinkItems = document.querySelectorAll(".nav-link");
+
   window.addEventListener("scroll", () => {
-    if (window.scrollY > 50) {
+    if (window.scrollY > 40) {
       header.classList.add("scrolled");
     } else {
       header.classList.remove("scrolled");
     }
   });
 
-  /* -------------------------------------------
-     2. Hero Stagger Animation on Load
-  ------------------------------------------- */
-  const staggerElems = document.querySelectorAll(".stagger-elem");
-  staggerElems.forEach((elem, index) => {
+  if (hamburger && navLinks) {
+    hamburger.addEventListener("click", () => {
+      hamburger.classList.toggle("open");
+      navLinks.classList.toggle("open");
+    });
+
+    navLinkItems.forEach(link => {
+      link.addEventListener("click", () => {
+        hamburger.classList.remove("open");
+        navLinks.classList.remove("open");
+      });
+    });
+  }
+
+  /* ----------------------------------------------------------------------
+     B. HERO STAGGERED TEXT LOAD ANIMATION (0.2s interval)
+     ---------------------------------------------------------------------- */
+  const staggerItems = document.querySelectorAll(".stagger-item");
+  staggerItems.forEach((item, index) => {
     setTimeout(() => {
-      elem.style.transition = "opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1)";
-      elem.style.opacity = "1";
-      elem.style.transform = "translateY(0)";
-    }, index * 200 + 100);
+      item.classList.add("loaded");
+    }, 150 + index * 200);
   });
 
-  /* -------------------------------------------
-     3. Scroll Fade In (Intersection Observer)
-  ------------------------------------------- */
-  const fadeElements = document.querySelectorAll('.fade-in');
-  const observerOptions = {
-    root: null,
-    rootMargin: '0px',
-    threshold: 0.15
-  };
-
-  const observer = new IntersectionObserver((entries, obs) => {
+  /* ----------------------------------------------------------------------
+     C. INTERSECTION OBSERVER FOR SECTION REVEALS (translateY:30px->0)
+     ---------------------------------------------------------------------- */
+  const revealElements = document.querySelectorAll(".reveal");
+  const revealObserver = new IntersectionObserver((entries, observer) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        obs.unobserve(entry.target);
+        entry.target.classList.add("is-revealed");
+        observer.unobserve(entry.target);
       }
     });
-  }, observerOptions);
-
-  fadeElements.forEach(el => observer.observe(el));
-
-  /* -------------------------------------------
-     4. Works Horizontal Scroll & Drag
-  ------------------------------------------- */
-  const scrollContainer = document.getElementById('works-scroll-container');
-  let isDown = false;
-  let startX;
-  let scrollLeft;
-
-  // マウスドラッグで横スクロール
-  scrollContainer.addEventListener('mousedown', (e) => {
-    isDown = true;
-    startX = e.pageX - scrollContainer.offsetLeft;
-    scrollLeft = scrollContainer.scrollLeft;
-  });
-  
-  scrollContainer.addEventListener('mouseleave', () => {
-    isDown = false;
-  });
-  
-  scrollContainer.addEventListener('mouseup', () => {
-    isDown = false;
-  });
-  
-  scrollContainer.addEventListener('mousemove', (e) => {
-    if (!isDown) return;
-    e.preventDefault();
-    const x = e.pageX - scrollContainer.offsetLeft;
-    const walk = (x - startX) * 2; // スクロール速度
-    scrollContainer.scrollLeft = scrollLeft - walk;
+  }, {
+    threshold: 0.15,
+    rootMargin: "0px 0px -40px 0px"
   });
 
-  // マウスホイールの縦スクロールを横スクロールに変換
-  scrollContainer.addEventListener('wheel', (e) => {
-    if (e.deltaY !== 0) {
+  revealElements.forEach(el => revealObserver.observe(el));
+
+  /* ----------------------------------------------------------------------
+     D. FILMSTRIP HORIZONTAL SCROLL (MOUSE DRAG & WHEEL)
+     ---------------------------------------------------------------------- */
+  const filmstrip = document.getElementById("filmstrip");
+  if (filmstrip) {
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+
+    filmstrip.addEventListener("mousedown", (e) => {
+      isDown = true;
+      startX = e.pageX - filmstrip.offsetLeft;
+      scrollLeft = filmstrip.scrollLeft;
+    });
+
+    filmstrip.addEventListener("mouseleave", () => {
+      isDown = false;
+    });
+
+    filmstrip.addEventListener("mouseup", () => {
+      isDown = false;
+    });
+
+    filmstrip.addEventListener("mousemove", (e) => {
+      if (!isDown) return;
       e.preventDefault();
-      scrollContainer.scrollLeft += e.deltaY;
-    }
-  });
+      const x = e.pageX - filmstrip.offsetLeft;
+      const walk = (x - startX) * 1.8; // Scroll sensitivity multiplier
+      filmstrip.scrollLeft = scrollLeft - walk;
+    });
 
+    // Wheel support for horizontal scroll when hovering filmstrip
+    filmstrip.addEventListener("wheel", (e) => {
+      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+        filmstrip.scrollLeft += e.deltaY;
+        e.preventDefault();
+      }
+    }, { passive: false });
+  }
   /* -------------------------------------------
      5. Hero SVG Particle Animation
   ------------------------------------------- */
